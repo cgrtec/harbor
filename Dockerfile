@@ -16,8 +16,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack prepare pnpm@11.9.0 --activate
 
 # [hermes] El script 'prepare' del repo ('vp config') invoca git; la imagen
-# slim no lo trae. Instalamos solo el binario.
-RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+# slim no lo trae. ca-certificates es imprescindible: Vite+ (Rust) panickea
+# al arrancar el dev server sin CAs del sistema ("No CA certificates...").
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Deterministic install from the committed lockfile (no `pnpm add`, no drift).
 RUN pnpm install --frozen-lockfile
