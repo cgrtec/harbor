@@ -9,7 +9,7 @@ const LANG_TOKENS: Record<string, string> = {
   HINDI: "Hindi",
   ESP: "Spanish",
   SPA: "Spanish",
-  SPANISH: "Spanish",
+  SPANISH: "Spanish (Latin America)",
   LAT: "Spanish (Latin America)",
   LATINO: "Spanish (Latin America)",
   LATAM: "Spanish (Latin America)",
@@ -83,7 +83,7 @@ const LANG_RX =
 
 const FLAG_TO_LANGUAGE: Record<string, string> = {
   US: "English", GB: "English", CA: "English", AU: "English", NZ: "English", IE: "English",
-  ES: "Spanish", MX: "Spanish", AR: "Spanish", CO: "Spanish", PE: "Spanish", CL: "Spanish",
+  ES: "Spanish", MX: "Spanish (Latin America)", AR: "Spanish (Latin America)", CO: "Spanish (Latin America)", PE: "Spanish (Latin America)", CL: "Spanish (Latin America)",
   IT: "Italian",
   DE: "German", AT: "German", CH: "German",
   FR: "French", BE: "French", LU: "French",
@@ -172,6 +172,13 @@ export function parseLanguages(text: string): string[] {
   while ((pairMatch = ISO_PAIR_RX.exec(text)) != null) {
     const lang = ISO_PAIR_TO_LANGUAGE[pairMatch[1].toUpperCase()];
     if (lang) out.add(lang);
+  }
+  // [HERMES] Marcador '❓' del addon (AIOStreams): español del que no se sabe si es
+  // castellano o latino. Tile propio en vez de bandera genérica de España.
+  if (text.includes("❓")) {
+    out.add("Spanish (Unknown)");
+    out.delete("Spanish");
+    out.delete("Spanish (Latin America)");
   }
   const concrete = [...out].filter((l) => l !== "Multi");
   if (concrete.length > 1) return ["Multi", ...concrete];

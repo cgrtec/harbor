@@ -12,6 +12,7 @@ import flagHun from "@/assets/flags/flag-hun.svg";
 import flagIta from "@/assets/flags/flag-ita.svg";
 import flagJpn from "@/assets/flags/flag-jpn.svg";
 import flagKor from "@/assets/flags/flag-kor.svg";
+import flagMex from "@/assets/flags/flag-mex.svg";
 import flagNld from "@/assets/flags/flag-nld.svg";
 import flagNor from "@/assets/flags/flag-nor.svg";
 import flagPol from "@/assets/flags/flag-pol.svg";
@@ -23,6 +24,7 @@ import flagSwe from "@/assets/flags/flag-swe.svg";
 import flagTha from "@/assets/flags/flag-tha.svg";
 import flagTur from "@/assets/flags/flag-tur.svg";
 import flagUkr from "@/assets/flags/flag-ukr.svg";
+import flagUnk from "@/assets/flags/flag-unk.svg";
 import flagVie from "@/assets/flags/flag-vie.svg";
 import flagZho from "@/assets/flags/flag-zho.svg";
 
@@ -32,7 +34,8 @@ const FLAG: Record<string, string> = {
   Russian: flagRus,
   Hindi: flagHin,
   Spanish: flagSpa,
-  "Spanish (Latin America)": flagSpa,
+  "Spanish (Latin America)": flagMex,
+  "Spanish (Unknown)": flagUnk,
   Korean: flagKor,
   Japanese: flagJpn,
   Chinese: flagZho,
