@@ -193,7 +193,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tauriScript: pnpm tauri
-          args: --target ${{ matrix.platform.target }}
+          args: --target ${{ matrix.platform.target }} --bundles ${{ matrix.platform.bundle }}
 
       - name: Upload artifacts
         if: success()
