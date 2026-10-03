@@ -12,6 +12,7 @@ import flagHun from "@/assets/flags/flag-hun.svg";
 import flagIta from "@/assets/flags/flag-ita.svg";
 import flagJpn from "@/assets/flags/flag-jpn.svg";
 import flagKor from "@/assets/flags/flag-kor.svg";
+import flagMex from "@/assets/flags/flag-mex.svg";
 import flagNld from "@/assets/flags/flag-nld.svg";
 import flagNor from "@/assets/flags/flag-nor.svg";
 import flagPol from "@/assets/flags/flag-pol.svg";
@@ -23,6 +24,7 @@ import flagSwe from "@/assets/flags/flag-swe.svg";
 import flagTha from "@/assets/flags/flag-tha.svg";
 import flagTur from "@/assets/flags/flag-tur.svg";
 import flagUkr from "@/assets/flags/flag-ukr.svg";
+import flagUnk from "@/assets/flags/flag-unk.svg";
 import flagVie from "@/assets/flags/flag-vie.svg";
 import flagZho from "@/assets/flags/flag-zho.svg";
 import { regionFlagSrc } from "@/lib/region-flags";
@@ -33,7 +35,9 @@ const FLAG: Record<string, string> = {
   Russian: flagRus,
   Hindi: flagHin,
   Spanish: flagSpa,
-  "Spanish (Latin America)": flagSpa,
+  // [HERMES] Doblaje latino -> bandera mexicana; "espanol sin precisar" -> tile '?'
+  "Spanish (Latin America)": flagMex,
+  "Spanish (Unknown)": flagUnk,
   Korean: flagKor,
   Japanese: flagJpn,
   Chinese: flagZho,
@@ -57,6 +61,13 @@ const FLAG: Record<string, string> = {
   Thai: flagTha,
   Ukrainian: flagUkr,
   Vietnamese: flagVie,
+};
+
+// [HERMES] Idiomas que se pintan con DOS iconos juntos: "Spanish (Unknown)" se
+// muestra como la bandera de Espana + el tile de duda '?' al lado, para
+// distinguirlo de un vistazo del castellano confirmado (bandera sola).
+const COMPOSITE: Record<string, string[]> = {
+  "Spanish (Unknown)": [flagSpa, flagUnk],
 };
 
 const LANG_COUNTRY: Record<string, string> = {
@@ -179,6 +190,43 @@ export function Flag({
         style={{ height: FLAG_HEIGHT[size] + 4, lineHeight: 1 }}
       >
         Multi
+      </span>
+    );
+  }
+
+  const composite = COMPOSITE[language];
+  if (composite) {
+    const ch = FLAG_HEIGHT[size];
+    return (
+      <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex items-center gap-[3px]">
+          {composite.map((s, i) => (
+            <img
+              key={i}
+              src={s}
+              alt={i === 0 ? "Spanish" : language}
+              title={i === 0 ? "Spanish" : language}
+              height={ch}
+              style={{
+                height: ch,
+                width: ch * 1.5,
+                display: "block",
+                borderRadius: 2,
+                objectFit: "cover",
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.4)",
+              }}
+              draggable={false}
+            />
+          ))}
+        </span>
+        {showLabel && (
+          <span
+            className="font-semibold tracking-[0.01em] text-ink-muted"
+            style={{ fontSize: LABEL_SIZE[size] }}
+          >
+            {language}
+          </span>
+        )}
       </span>
     );
   }
@@ -317,6 +365,30 @@ export function FlagStack({
               style={{ height: h + 2, lineHeight: 1 }}
             >
               M
+            </span>
+          );
+        }
+        const comp = COMPOSITE[lang];
+        if (comp) {
+          return (
+            <span key={lang} className="inline-flex items-center gap-[3px]">
+              {comp.map((s, i) => (
+                <img
+                  key={i}
+                  src={s}
+                  alt={i === 0 ? "Spanish" : lang}
+                  title={lang}
+                  style={{
+                    height: h,
+                    width: h * 1.5,
+                    display: "block",
+                    borderRadius: 2,
+                    objectFit: "cover",
+                    boxShadow: "0 0 0 1px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.4)",
+                  }}
+                  draggable={false}
+                />
+              ))}
             </span>
           );
         }

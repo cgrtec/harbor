@@ -5,8 +5,10 @@ services:
       dockerfile: Dockerfile
     container_name: harbor-web
     restart: unless-stopped
+    # [HERMES] puertos en LAN+localhost para convivir con tailscale serve :1420
     ports:
-      - "1420:1420"
+      - "127.0.0.1:1420:1420"
+      - "192.168.0.127:1420:1420"
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true

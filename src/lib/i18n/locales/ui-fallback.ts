@@ -1,5 +1,6 @@
 // Newly introduced UI copy remains usable until each locale provides an override.
 const uiFallback: Record<string, string> = {
+  "Spanish (Unknown)": "Spanish (Unknown)",
   "A source couldn't be reached": "A source couldn't be reached",
   "{n} sources couldn't be reached": "{n} sources couldn't be reached",
   "blocked by the network policy": "blocked by the network policy",

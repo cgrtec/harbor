@@ -228,7 +228,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tauriScript: pnpm tauri
-          args: --target ${{ matrix.platform.target }} ${{ steps.sign.outputs.config }} ${{ steps.macos-libraries.outputs.config }}
+          args: --target ${{ matrix.platform.target }} --bundles ${{ matrix.platform.bundle }} ${{ steps.sign.outputs.config }} ${{ steps.macos-libraries.outputs.config }}
 
       - name: Build Linux system packages
         if: contains(matrix.platform.runner, 'ubuntu')

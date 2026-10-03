@@ -405,6 +405,9 @@ const misc: Record<string, string> = {
   Spain: "España",
   Spanish: "Español",
   "Spanish (Latin America)": "Español (Latinoamérica)",
+  // [HERMES] Español sin precisar castellano/latino (se muestra con bandera de
+  // España + tile '?' en la UI)
+  "Spanish (Unknown)": "Español (por determinar)",
   "Spoiler — Click": "Spoiler: haz clic",
   "Spoiler — Click to reveal": "Spoiler: haz clic para revelar",
   star: "estrella",
