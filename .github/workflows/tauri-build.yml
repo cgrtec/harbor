@@ -16,6 +16,11 @@ env:
   # these installers ship without extension support. The build says so on every run. Drop this line
   # the day the layer ships with the checkout, and the build starts refusing to omit it.
   HARBOR_CAPSTAN_OPTIONAL: "1"
+  # The layer sources (src/, tools/) are tracked but its built jars (libs/, tools/dex-tools/lib) are
+  # not, so the stage script sees a "present" layer with missing parts and stops before the
+  # OPTIONAL path can run. Point SRC at an empty path so the documented no-layer build path is
+  # taken, exactly as the OPTIONAL line above intends.
+  HARBOR_CAPSTAN_SRC: ""
 
 jobs:
   build:
