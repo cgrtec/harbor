@@ -152,34 +152,51 @@ const ISO_PAIR_TO_LANGUAGE: Record<string, string> = {
 };
 
 export function parseLanguages(text: string): string[] {
+  // [HERMES] Las líneas de fuente del addon ("⛉ [RD] Jackett ES") no declaran idiomas: el
+  // "ES" del tracker "Jackett ES" producía un falso castellano. Se limpian antes de parsear.
+  const cleaned = text.replace(/⛉[^\n]*/g, " ");
   const out = new Set<string>();
-  const tokens = text.match(LANG_RX) ?? [];
+  // [HERMES] "Castellano explícito" = token CASTELLANO o bandera 🇪🇸. Si el único indicio de
+  // castellano es un token genérico (SPANISH/ESP/SPA) y además hay señal latina, el genérico
+  // se descarta: el audio latino manda (p.ej. "[Spanish]" de un release que suena en latino).
+  let strongSpanish = false;
+  const tokens = cleaned.match(LANG_RX) ?? [];
   for (const raw of tokens) {
     const upper = raw.toUpperCase();
     const mapped = LANG_TOKENS[upper];
-    if (mapped) out.add(mapped);
-    else if (upper === "MULTI" || upper === "DUAL") out.add("Multi");
+    if (mapped) {
+      if (upper === "CASTELLANO") strongSpanish = true;
+      out.add(mapped);
+    } else if (upper === "MULTI" || upper === "DUAL") out.add("Multi");
   }
-  for (const flag of text.match(FLAG_RX) ?? []) {
+  for (const flag of cleaned.match(FLAG_RX) ?? []) {
     const a = flag.codePointAt(0);
     const b = flag.codePointAt(2);
     if (a == null || b == null) continue;
     const code = String.fromCharCode(a - 0x1f1e6 + 65) + String.fromCharCode(b - 0x1f1e6 + 65);
     const lang = FLAG_TO_LANGUAGE[code];
-    if (lang) out.add(lang);
+    if (lang) {
+      if (code === "ES") strongSpanish = true;
+      out.add(lang);
+    }
   }
   let pairMatch: RegExpExecArray | null;
   ISO_PAIR_RX.lastIndex = 0;
-  while ((pairMatch = ISO_PAIR_RX.exec(text)) != null) {
+  while ((pairMatch = ISO_PAIR_RX.exec(cleaned)) != null) {
     const lang = ISO_PAIR_TO_LANGUAGE[pairMatch[1].toUpperCase()];
     if (lang) out.add(lang);
   }
   // [HERMES] Marcador '❓' del addon (AIOStreams): español del que no se sabe si es
   // castellano o latino. Se pinta como bandera de España + tile '?' (Spanish (Unknown)).
-  if (text.includes("❓")) {
+  if (cleaned.includes("❓")) {
     out.add("Spanish (Unknown)");
     out.delete("Spanish");
     out.delete("Spanish (Latin America)");
+  }
+  // [HERMES] El latino manda sobre el genérico: solo se mantiene "Spanish" si venía de un
+  // indicio explícito (CASTELLANO / bandera 🇪🇸). Cubre el [Spanish] de releases latinos.
+  if (out.has("Spanish (Latin America)") && out.has("Spanish") && !strongSpanish) {
+    out.delete("Spanish");
   }
   const concrete = [...out].filter((l) => l !== "Multi");
   if (concrete.length > 1) return ["Multi", ...concrete];

@@ -35,6 +35,9 @@ const cases: Case[] = [
   ["🇪🇸 + 🇲🇽 + 🇺🇸 → Multi trío", "Cars 🇪🇸 🇲🇽 🇺🇸",            (r) => r[0] === "Multi" && r.includes("Spanish") && r.includes("Spanish (Latin America)") && r.includes("English")],
   ["sin datos → vacío",         "Cars.2006.2160p.mkv",        (r) => eq(r, [])],
   ["🇲🇽 solo → LatAm exacto",    "Cars-dual-lat 🇲🇽",           (r) => eq(r, ["Spanish (Latin America)"])],
+  ["[Spanish] + 🇲🇽 → solo latino", "Cuando harry enf… [Spanish] ⛿ ᴇs-ᴍx » 🇲🇽", (r) => eq(r, ["Spanish (Latin America)"])],
+  ["⛉ Jackett ES no aporta idioma", "⛉ [RD] Jackett ES\n⛿ ʀᴜ » 🇷🇺", (r) => eq(r, ["Russian"])],
+  ["CASTELLANO + 🇲🇽 conserva ambos", "Cars [Castellano] 🇲🇽 1080p", (r) => r.includes("Spanish") && r.includes("Spanish (Latin America)")],
 ];
 
 let pass = 0;
