@@ -41,7 +41,6 @@ import {
 const IS_TAURI = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 const DISMISS_KEY = "harbor.update.dismissed";
 const PENDING_KEY = "harbor.update.pending";
-const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 export type UpdateStatus =
   | "idle"
@@ -930,8 +929,9 @@ export function startUpdateWatcher(): void {
     else clearStagedUpdate();
   });
   void (async () => {
-    const failed = await detectFailedUpdate();
-    if (!failed) void checkForUpdate(false);
-    window.setInterval(() => void checkForUpdate(false), CHECK_INTERVAL_MS);
+    // [HERMES] Sin chequeos automáticos de actualización en este fork parcheado: la app no
+    // debe anunciar (ni instalar) la versión de harbor.site por error — perdería los
+    // parches. El chequeo manual («Check for Updates» en ajustes y menú) sigue disponible.
+    await detectFailedUpdate();
   })();
 }
